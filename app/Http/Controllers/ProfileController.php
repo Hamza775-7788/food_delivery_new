@@ -9,48 +9,132 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * عرض جميع البروفايلات (اختياري - حسب الصلاحيات)
      */
     public function index()
     {
-        //
+        $profiles = Profile::with('user')->paginate(10);
+        return response()->json([
+            'status' => true,
+            'data' => $profiles
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * إنشاء بروفايل جديد
      */
     public function store(Request $request)
     {
         $request->validate([
-            "full_name" => "required|string",
+            "full_name"  => "required|string|max:255",
+            "phone"      => "nullable|string|max:20",
+            "birth_day"  => "nullable|date",
+            "gender"     => "boolean"
         ]);
-        $data = $request->all();
+
+        $data = $request->only(['full_name', 'phone', 'birth_day', 'gender']);
         $data['user_id'] = $request->user()->id;
+
+        // منع إنشاء أكثر من بروفايل لنفس المستخدم
+        if (Profile::where('user_id', $data['user_id'])->exists()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Profile already exists for this user'
+            ], 409);
+        }
+
         $profile = Profile::create($data);
-        return response()->json(['status' => true, "data" => $profile]);
+
+        return response()->json([
+            'status' => true,
+            'data'   => $profile
+        ], 201);
     }
 
     /**
-     * Display the specified resource.
+     * عرض بروفايل محدد
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $profile = Profile::with('user')->find($id);
+
+        if (!$profile) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Profile not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data'   => $profile
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * تحديث البروفايل
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $profile = Profile::find($id);
+
+        if (!$profile) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Profile not found'
+            ], 404);
+        }
+
+        // تحقق أن المستخدم يملك هذا البروفايل
+        if ($request->user()->id !== $profile->user_id) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $request->validate([
+            "full_name"  => "required|string|max:255",
+            "phone"      => "nullable|string|max:20",
+            "birth_day"  => "nullable|date",
+            "gender"     => "boolean"
+        ]);
+
+        $profile->update($request->only(['full_name', 'phone', 'birth_day', 'gender']));
+
+        return response()->json([
+            'status' => true,
+            'data'   => $profile
+        ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * حذف البروفايل
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $profile = Profile::find($id);
+
+        if (!$profile) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Profile not found'
+            ], 404);
+        }
+
+        // تحقق أن المستخدم يملك هذا البروفايل
+        if ($request->user()->id !== $profile->user_id) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $profile->delete();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Profile deleted successfully'
+        ]);
     }
 }
