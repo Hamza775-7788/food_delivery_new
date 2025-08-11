@@ -20,6 +20,8 @@ Route::get("profileUser", [UserController::class, "show"])->middleware('auth:san
 Route::apiResource("category", CategoryController::class);
 Route::get("category/{id}/product", [CategoryController::class, "getProduct"]);
 Route::apiResource("profile", ProfileController::class)->middleware('auth:sanctum');
+Route::put("profile", [ProfileController::class, "update"])->middleware('auth:sanctum');
+Route::post("profile", [ProfileController::class, "store"])->middleware('auth:sanctum');
 // Route::apiResource("product", ProductController::class);
 Route::apiResource("product", ProductController::class);
 

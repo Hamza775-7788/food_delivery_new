@@ -32,7 +32,7 @@ class ProfileController extends Controller
             "gender"     => "boolean"
         ]);
 
-        $data = $request->only(['full_name', 'phone', 'birth_day', 'gender']);
+        $data = $request->only(['full_name', 'phone', 'birth_day', 'gender', 'image']);
         $data['user_id'] = $request->user()->id;
 
         // منع إنشاء أكثر من بروفايل لنفس المستخدم
@@ -74,8 +74,9 @@ class ProfileController extends Controller
     /**
      * تحديث البروفايل
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        $id = $request->user()->profile->id;
         $profile = Profile::find($id);
 
         if (!$profile) {
@@ -85,14 +86,6 @@ class ProfileController extends Controller
             ], 404);
         }
 
-        // تحقق أن المستخدم يملك هذا البروفايل
-        if ($request->user()->id !== $profile->user_id) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Unauthorized'
-            ], 403);
-        }
-
         $request->validate([
             "full_name"  => "required|string|max:255",
             "phone"      => "nullable|string|max:20",
@@ -100,7 +93,7 @@ class ProfileController extends Controller
             "gender"     => "boolean"
         ]);
 
-        $profile->update($request->only(['full_name', 'phone', 'birth_day', 'gender']));
+        $profile->update($request->only(['full_name', 'phone', 'birth_day', 'gender', 'image']));
 
         return response()->json([
             'status' => true,

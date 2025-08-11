@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime("barth_day")->nullable();
             $table->string("full_name");
             $table->boolean("gender")->default(false);
+            $table->text("image")->nullable();
         });
     }
 
