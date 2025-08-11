@@ -1,0 +1,36 @@
+{
+    "status": [
+        {
+            "name": "pending",
+            "id": 1
+        },
+        {
+            "name": "accepted",
+            "id": 2
+        },
+        {
+            "name": "rejected",
+            "id": 3
+        },
+        {
+            "name": "cancelled",
+            "id": 4
+        },
+        {
+            "name": "shipped",
+            "id": 5
+        },
+        {
+            "name": "delivered",
+            "id": 6
+        },
+        {
+            "name": "returned",
+            "id": 7
+        },
+        {
+            "name": "deleted",
+            "id": 8
+        }
+    ]
+}

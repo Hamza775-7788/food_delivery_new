@@ -11,11 +11,14 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            "address" => 'required|string'
+            "address" => 'required|string',
+            "title" => 'required|string',
         ]);
 
         $address =  Address::create([
             "address" => $request->address,
+            "title" => $request->title,
+            "active" => false,
             "user_id" => Auth::user()->id,
         ]);
 
@@ -39,9 +42,29 @@ class AddressController extends Controller
         $address = Address::where("id", $id)->first();
         $address->update([
             'address' => $request->address,
+            "title" => $request->title,
+            "active" => false,
         ]);
 
         return response()->json(['status', true, "data" => $address]);
+    }
+    
+    public function activate(Request $request, $id)
+    {
+
+        $selectedAddress = Address::find($id);
+
+        Address::where("user_id", Auth::user()->id)->update([
+            "active" => false,
+        ]);
+
+        $selectedAddress->update([
+            "active" => true,
+        ]);
+
+
+
+        return response()->json(['status', true,]);
     }
     public function destroy(Request $request, $id)
     {

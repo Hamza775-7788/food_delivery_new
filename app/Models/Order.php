@@ -17,7 +17,7 @@ class Order extends Model
     }
     public function orderStatus()
     {
-        return $this->belongsTo(OrderStatus::class);
+        return $this->belongsTo(OrderStatus::class, 'orderStatus_id');
     }
 
     public function orderDetils()

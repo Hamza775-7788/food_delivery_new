@@ -70,4 +70,13 @@ class ProductController extends Controller
         $product->delete();
         return response()->json(["status" => true,]);
     }
+
+    public function serach(Request $request)
+    {
+
+        $query = $request->input("q");
+        $product = Product::where("name", "LIKE", "%{$query}%")->get();
+        
+        return response()->json(['data' => $product]);
+    }
 }
