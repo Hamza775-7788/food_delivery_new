@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +29,9 @@ class AddressController extends Controller
     public function show(Request $request)
     {
 
-        $address = Address::where("user_id", Auth::user()->id)->get();
+        $address = Address::where("user_id", Auth::id())
+            ->orderBy("active", "desc") // أو "asc" حسب الحاجة
+            ->get();
 
         return   response()->json(['status' => true, "data" => $address]);
     }
@@ -48,7 +51,7 @@ class AddressController extends Controller
 
         return response()->json(['status', true, "data" => $address]);
     }
-    
+
     public function activate(Request $request, $id)
     {
 
