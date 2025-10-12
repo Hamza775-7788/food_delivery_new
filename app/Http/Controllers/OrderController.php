@@ -23,19 +23,22 @@ class OrderController extends Controller
     public function show(Request $request)
     {
 
-        $data = Order::where("user_id", Auth::user()->id)->with(['orderDetils', 'orderStatus', 'orderDetils.Product', "user"])->get();
+        $data = Order::where('user_id', Auth::user()->id)
+            ->with(['orderDetils', 'orderStatus', 'orderDetils.Product', 'user'])
+            ->orderBy('id', 'desc')
+            ->get();
         return response()->json(['data' => $data]);
     }
     public function showWithStats(Request $request, $id)
     {
 
-        $data = Order::where("user_id", Auth::user()->id)->where("orderStatus_id", $id)->with(['orderDetils', 'orderStatus', 'orderDetils.Product', "user"])->get();
+        $data = Order::where("user_id", Auth::user()->id)->where("orderStatus_id", $id)->with(['orderDetils', 'orderStatus', 'orderDetils.Product', "user"])->orderBy('id', 'desc')->get();
         return response()->json(['data' => $data]);
     }
 
     public function index()
     {
-        $data = Order::with(['orderDetils', 'orderStatus', 'orderDetils.Product', "user"])->get();
+        $data = Order::with(['orderDetils', 'orderStatus', 'orderDetils.Product', "user"])->orderBy('id', 'desc')->get();
         return response()->json(['data' => $data]);
     }
 
