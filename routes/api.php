@@ -58,6 +58,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
     Route::post("order", [OrderController::class, 'addOrder']);
+    Route::get("order-show/{id}", [OrderController::class, 'showByID']);
     Route::get("order/user", [OrderController::class, 'show']);
     Route::get("order/user/{id}", [OrderController::class, 'showWithStats']);
     Route::put("order/{id}", [OrderController::class, 'update']);
@@ -71,6 +72,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/orders/{id}/deliver', [OrderController::class, 'deliverOrder']);
     Route::post('/orders/{id}/return', [OrderController::class, 'returnOrder']);
     Route::post('/orders/{id}/delete', [OrderController::class, 'deleteOrder']);
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
 });
 
 

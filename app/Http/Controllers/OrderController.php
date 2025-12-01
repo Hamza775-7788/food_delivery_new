@@ -18,7 +18,16 @@ class OrderController extends Controller
     {
         $this->statusService = $statusService;
     }
+    public function showByID(int $id)
+    {
+        $order = Order::where('id', $id)
+            ->with(['orderDetils', 'orderStatus', 'orderDetils.Product', 'user'])
+            ->orderBy('id', 'desc')
+            ->get();
 
+        if (!$order) return response()->json(["message" => "Order not found"], 404);
+        return response()->json($order);
+    }
 
     public function show(Request $request)
     {
