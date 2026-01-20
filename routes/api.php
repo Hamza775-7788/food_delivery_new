@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderStatusController;
@@ -79,6 +80,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
 Route::get("order", [OrderController::class, 'index']);
+Route::get("admin-orderChart", [AdminController::class, 'showOrders']);
+Route::get("admin-userChart", [AdminController::class, 'userChart']);
 
 
 
